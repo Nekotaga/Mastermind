@@ -125,7 +125,7 @@ public class Tablero implements DibujableTablero{
 					System.out.printf("%s      %s  ",f.getColorFicha().getColorFondo(),Constantes.RESET);
 				System.out.print(" ");
 				for (byte j=0;j<(cByN.length)/2;j++) {
-					if (rondas.getLast().getCombinacionPropuesta().equals(combinacionOriginal)||r.getContadorRonda()==rondas.getLast().getContadorRonda()&&i!=1) {
+					if (rondas.getLast().getCombinacionPropuesta().equals(combinacionOriginal)&&i!=1||r.getContadorRonda()==rondas.getLast().getContadorRonda()&&i!=1) {
 						System.out.printf("%s%s%s   ",Color.BLANCO.getColor(),Constantes.VACIO,Constantes.RESET);
 						if ((cByN.length)%2!=0&&j==(cByN.length/2)-1&&i==2)
 							System.out.printf("%s%s%s   ",Color.BLANCO.getColor(),Constantes.VACIO,Constantes.RESET);

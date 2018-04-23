@@ -45,7 +45,7 @@ public class Partida implements DibujablePartida {
 				if (jugador.getCombinacionOriginal().equals(maquina1.getCombinacionPropuesta()))	// Comprobamos si la combinación dada por la máquina es igual a la original
 					resultado=true;
 				maquina1.getTablero().mostrarTableroAjeno();										// Mostramos el tablero de la máquina desde la perspectiva del jugador
-				//jugador.comprobarCombinacion(ronda);												// El jugador comprueba si la combinación de la máquina es correcta
+				jugador.comprobarCombinacion(ronda);												// El jugador comprueba si la combinación de la máquina es correcta
 			}
 			
 		}
