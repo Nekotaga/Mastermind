@@ -10,10 +10,10 @@ public class Mastermind {
 		ConfigurarPartida configuracion = new ConfigurarPartida();
 		boolean finalizarJuego;
 		
-		//configuracion.mostrarRotulo();
+		//configuracion.mostrarRotulo();		// Muestra el rótulo del juego
 		do {
-			finalizarJuego=configuracion.mostrarMenu();
+			finalizarJuego=configuracion.mostrarMenu();		// Muestra el juego en sí
 		}while(!finalizarJuego);
-		cerrarTeclado();
+		cerrarTeclado();		// Cerramos el teclado para que no se pueda escribir más una vez el juego haya acabado
 	}
 }

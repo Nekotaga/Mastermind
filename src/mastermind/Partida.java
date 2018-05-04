@@ -2,21 +2,64 @@ package mastermind;
 
 import static utilidades.Teclado.limpiarTeclado;
 
+/**
+ * Esta clase almacena los usuarios que desarrollan la partida declarada por ConfigurarPartida y su resultado.
+ * 
+ * @author Nekotaga
+ * @version 1.2
+ * @since 1.0
+ * @see Usuario
+ * @see ConfigurarPartida
+ * @see Resultado
+ */
 public class Partida implements DibujablePartida {
 	
 	//Variables
+	/**
+	 * Almacena la dificultad determinada por ConfigurarPartida.
+	 * @see ConfigurarPartida
+	 * @see Dificultad
+	 */
 	private Dificultad dificultad;
+	/**
+	 * Almacena los datos del Usuario tipo Jugador.
+	 * @see Usuario
+	 * @see Jugador
+	 */
 	private Jugador jugador;
+	/**
+	 * Almacena los datos del primer Usuario tipo Maquina.
+	 * @see Usuario
+	 * @see Maquina
+	 */
 	private Maquina maquina1;
+	/**
+	 * Almacena los datos del segundo Usuario tipo Maquina.
+	 * @see Usuario
+	 * @see Maquina
+	 */
 	private Maquina maquina2;
+	/**
+	 * Almacena la cadena correspondiente al resultado de la partida.
+	 * @see Resultado 
+	 */
 	private String resultadoPartida;
 	
 	//Constructor
+	/**
+	 * Construye un objeto Partida a partir de la dificultad.
+	 * @param dificultad	La dificultad de la partida.
+	 * @see Dificultad
+	 */
 	Partida(Dificultad dificultad){
 		this.dificultad=dificultad;
 	}
 	
 	//Métodos
+	/**
+	 * Desarrolla una partida de dificultad fácil.
+	 * @see Dificultad
+	 */
 	private void partidaFacil() {
 		Ronda ronda;
 		boolean resultado=false;
@@ -54,6 +97,10 @@ public class Partida implements DibujablePartida {
 		else
 			resultadoPartida=Resultado.DERROTA.getMensaje();
 	}
+	/**
+	 * Desarrolla una partida de dificultad media.
+	 * @see Dificultad
+	 */
 	private void partidaMedio() {
 		Ronda rondaJug;
 		Ronda rondaMaq;
@@ -81,7 +128,7 @@ public class Partida implements DibujablePartida {
 			maquina1.getTablero().agregarRonda(rondaMaq);										// Agregamos la ronda a la colección de rondas del tablero de la máquina
 			if (jugador.getCombinacionOriginal().equals(maquina1.getCombinacionPropuesta()))	// Comprobamos si la combinación dada por la máquina es igual a la original
 				resultadoMaq=true;
-			System.out.println("                  "+Color.AZUL.getColorFondo()+Color.BLANCO.getColor()+"TABLERO DE LA MÁQUINA"+Constantes.RESET);
+			System.out.println("                  "+Color.AZUL.getColorFondo()+Color.BLANCO.getColor()+"TABLERO DE LA MAQUINA"+Constantes.RESET);
 			maquina1.getTablero().mostrarTableroAjeno();										// Mostramos el tablero de la máquina desde la perspectiva del jugador
 			jugador.comprobarCombinacion(rondaMaq);												// El jugador comprueba si la combinación de la máquina es correcta
 		}
@@ -92,6 +139,10 @@ public class Partida implements DibujablePartida {
 		else if (resultadoMaq)
 			resultadoPartida=Resultado.DERROTA.getMensaje();
 	}
+	/**
+	 * Desarrolla una partida de dificultad difícil.
+	 * @see Dificultad
+	 */
 	private void partidaDificil() {
 		Ronda rondaMaq1;
 		Ronda rondaMaq2;
@@ -116,13 +167,17 @@ public class Partida implements DibujablePartida {
 			if (maquina1.getCombinacionOriginal().equals(maquina2.getCombinacionPropuesta()))	// Comprobamos si la combinación dada por la máquina 2 es igual a la original
 				resultadoMaq2=true;
 			//Pasamos de ronda
-			contadorRondas++;
-			System.out.println(contadorRondas);
+			try {
+				Thread.sleep(750);		// Milisegundos que tarda en pasar de ronda
+			}catch (InterruptedException e){
+				System.out.println();
+			}
+			if (contadorRondas%10==0||contadorRondas==0)
+				maquina1.getTablero().mostrarTableroDificil(true,true);		// Mostramos la combinacion original cada 10 turnos (aqui el segundo true no sirve de nada)
+			maquina1.getTablero().mostrarTableroDificil(false,true);		// Mostramos la última combinación de la máquina 1 que se ha realizado en la partida
+			maquina2.getTablero().mostrarTableroDificil(false,false);		// Mostramos la última combinación de la máquina 2 que se ha realizado en la partida
+			contadorRondas++;		// Aumentamos el contador
 		}while(!resultadoMaq1&&!resultadoMaq2);
-		System.out.println("                                 "+Color.AZUL.getColorFondo()+Color.BLANCO.getColor()+"TABLERO DE LA MÁQUINA 1"+Constantes.RESET);
-		maquina1.getTablero().mostrarTableroFinal();											// Mostramos la última combinación de la máquina 1 que se ha realizado en la partida
-		System.out.println("                                 "+Color.AZUL.getColorFondo()+Color.BLANCO.getColor()+"TABLERO DE LA MÁQUINA 2"+Constantes.RESET);
-		maquina2.getTablero().mostrarTableroFinal();											// Mostramos la última combinación de la máquina 2 que se ha realizado en la partida
 		if (resultadoMaq1&&resultadoMaq2)
 			resultadoPartida=Resultado.EMPATE.getMensaje();
 		else if (resultadoMaq1)
@@ -132,6 +187,10 @@ public class Partida implements DibujablePartida {
 	}
 	
 	//Métodos de Interfaz
+	/**
+	 * Muestra la partida en curso.
+	 * @see DibujablePartida
+	 */
 	public void mostrarPartida(){
 		System.out.printf("Datos de la partida:\n - Dificultad: %s",dificultad.toString());
 		System.out.println(" - Colores permitidos:\n");

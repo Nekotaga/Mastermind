@@ -1,8 +1,0 @@
-package mastermind;
-
-public enum IA {
-	BIEN_COLOCADA,
-	APARECE_PRIMERA_MITAD,
-	APARECE_SEGUNDA_MITAD,
-	APARECE;
-}

@@ -3,25 +3,55 @@ package utilidades;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+/**
+ * Esta clase se encarga de aportar métodos para la introducción de datos por teclado.
+ * 
+ * @author Nekotaga
+ * @version 1.0
+ * @since 1.0
+ */
 public class Teclado {
 	
+	//Enum
 	public enum leerEntre{
 		AMBOS_EXCLUIDOS,MAYOR_EXCLUIDO,MENOR_EXCLUIDO,AMBOS_INCLUIDOS
 	}
 	
+	//Variables
+	/**
+	 * Esta es la variable que se encargará de la interacción con el usuario.
+	 */
 	private static Scanner teclado = new Scanner (System.in);
 	
+	//Métodos
+	/**
+	 * Cierra el teclado para que no se pueda escribir más.
+	 */
 	public static void cerrarTeclado() {
 		teclado.close();
 	}
+	/**
+	 * Limpia el buffer u obliga a pulsar la tecla Enter para continuar.
+	 */
 	public static void limpiarTeclado() {
 		teclado.nextLine();
 	}
+	/**
+	 * Devuelve una cadena que debe introducir el usuario por teclado.
+	 * @return La cadena.
+	 */
 	public static String leerString() {
 		String cadena;
 		cadena=teclado.nextLine();		
 		return cadena;	
 	}
+	/**
+	 * Devuelve true o false según si se elige la primera o la segunda respuesta a partir de la petición dada al usuario.
+	 * @param mensaje1	La petición al usuario.
+	 * @param mensaje2	La respuesta 1 (true).
+	 * @param mensaje3	La respuesta 2 (false).
+	 * @return	true si el usuario ha elegido la primera respuesta o false si ha elegido la segunda.
+	 */
 	public static boolean elegirEntre(String mensaje1,String mensaje2,String mensaje3) {
 		byte b=0;
 		boolean booleano,valorAdecuado;
@@ -48,8 +78,14 @@ public class Teclado {
 		
 		return booleano;
 	}
-	
-	//Número entre 2 valores
+	/**
+	 * Devuelve un número introducido por el usuario por teclado entre 2 números límite.
+	 * @param numMenor		El límite inferior.
+	 * @param numMayor		El límite superior.
+	 * @param valor			Si se incluyen o no los límites.
+	 * @param mensajeError	El mensaje de error que se dará al usuario en caso de que introducizca un número fuera de los límites.
+	 * @return	El número.
+	 */
 	public static byte leerEntre(byte numMenor,byte numMayor,leerEntre valor,String mensajeError) {
 		if (numMayor<=numMenor||valor==leerEntre.AMBOS_EXCLUIDOS&&numMayor==numMenor+1)
 			throw new IllegalArgumentException("ERROR: El número mayor es menor o igual al menor");
