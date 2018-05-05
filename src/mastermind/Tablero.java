@@ -7,7 +7,7 @@ import java.util.ListIterator;
  * Esta clase almacena el las rondas de los usuarios y las muestra.
  * 
  * @author Nekotaga
- * @version 1.2
+ * @version 1.3
  * @since 1.0
  * @see Ronda
  * @see Combinacion
@@ -224,26 +224,27 @@ public class Tablero implements DibujableTablero{
 		Ficha cPropuesta[]=ronda.getCombinacionPropuesta().getCombinacion();
 		Ficha cByN[]=ronda.getResultadoByN().getCombinacion();
 		if (original) {
-			System.out.print("\n    ");
+			if (jug1)
+				System.out.print("\n          ");
 			for (Ficha fco:cOriginal)
 				System.out.printf("%s  %s ",fco.getColorFicha().getColorFondo(),Constantes.RESET);	// Se colocan los colores de la combinacion propuesta
-			System.out.println("\n");
-		}else {
 			if (jug1)
-				System.out.printf("%s    %02d%s    ",Color.BLANCO.getColor(),(ronda.getContadorRonda()+1),Constantes.RESET);	// Se colocan los números de ronda
+				System.out.print("                                 ");
 			else
-				System.out.print("    ");
+				System.out.println("\n");
+		}else {
+			System.out.printf("%s    %02d%s    ",Color.BLANCO.getColor(),(ronda.getContadorRonda()+1),Constantes.RESET);	// Se colocan los números de ronda
 			for (Ficha fco:cPropuesta)
 				System.out.printf("%s  %s ",fco.getColorFicha().getColorFondo(),Constantes.RESET);	// Se colocan los colores de la combinacion propuesta
 			System.out.print(" ");
 			for (Ficha fco:cByN) {	// Se colocan los puntos negros y blancos
 				if (fco!=null)
-					System.out.printf("%s%s%s   ",fco.getColorFicha().getColor(),Constantes.CIRCULO,Constantes.RESET);
+					System.out.printf("%s%s%s ",fco.getColorFicha().getColor(),Constantes.CIRCULO,Constantes.RESET);
 				else
-					System.out.printf("%s%s%s   ",Color.BLANCO.getColor(),Constantes.VACIO,Constantes.RESET);
+					System.out.printf("%s%s%s ",Color.BLANCO.getColor(),Constantes.VACIO,Constantes.RESET);
 			}
 			if (jug1)
-				System.out.print("  ||  ");
+				System.out.print("   ||");
 			else
 				System.out.println();
 		}

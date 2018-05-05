@@ -6,7 +6,7 @@ import static utilidades.Teclado.limpiarTeclado;
  * Esta clase almacena los usuarios que desarrollan la partida declarada por ConfigurarPartida y su resultado.
  * 
  * @author Nekotaga
- * @version 1.2
+ * @version 1.3
  * @since 1.0
  * @see Usuario
  * @see ConfigurarPartida
@@ -125,6 +125,7 @@ public class Partida implements DibujablePartida {
 			//Máquina
 			maquina1.setCombinacionPropuesta(maquina1.colocarCombinacion());					// La máquina coloca una combinación para adivinar la combinación del jugador
 			rondaMaq = new Ronda(contadorRondas,jugador.getCombinacionOriginal(),maquina1.getCombinacionPropuesta());	// Se crea la ronda de la máquina a partir de la combinación original y la propuesta en este turno por la máquina
+			maquina1.comprobarCombinacion(rondaMaq);											// La máquina hace comprobaciones con respecto a su combinacion
 			maquina1.getTablero().agregarRonda(rondaMaq);										// Agregamos la ronda a la colección de rondas del tablero de la máquina
 			if (jugador.getCombinacionOriginal().equals(maquina1.getCombinacionPropuesta()))	// Comprobamos si la combinación dada por la máquina es igual a la original
 				resultadoMaq=true;
@@ -157,12 +158,14 @@ public class Partida implements DibujablePartida {
 			//Maquina 1
 			maquina1.setCombinacionPropuesta(maquina1.colocarCombinacion());					// La máquina 1 coloca una combinación para adivinar la combinación de la máquina 2
 			rondaMaq1 = new Ronda(contadorRondas,maquina2.getCombinacionOriginal(),maquina1.getCombinacionPropuesta());	// Se crea la ronda de la máquina 1 a partir de la combinación original y la propuesta en este turno por la máquina 2
+			maquina1.comprobarCombinacion(rondaMaq1);											// La máquina 1 hace comprobaciones con respecto a su combinacion
 			maquina1.getTablero().agregarRonda(rondaMaq1);										// Agregamos la ronda a la colección de rondas del tablero de la máquina 1
 			if (maquina2.getCombinacionOriginal().equals(maquina1.getCombinacionPropuesta()))	// Comprobamos si la combinación dada por la máquina 1 es igual a la original
 				resultadoMaq1=true;
 			//Máquina 2
 			maquina2.setCombinacionPropuesta(maquina2.colocarCombinacion());					// La máquina 2 coloca una combinación para adivinar la combinación de la máquina 1
 			rondaMaq2 = new Ronda(contadorRondas,maquina1.getCombinacionOriginal(),maquina2.getCombinacionPropuesta());	// Se crea la ronda de la máquina 2 a partir de la combinación original y la propuesta en este turno por la máquina 1
+			maquina2.comprobarCombinacion(rondaMaq2);											// La máquina 2 hace comprobaciones con respecto a su combinacion
 			maquina2.getTablero().agregarRonda(rondaMaq2);										// Agregamos la ronda a la colección de rondas del tablero de la máquina 2
 			if (maquina1.getCombinacionOriginal().equals(maquina2.getCombinacionPropuesta()))	// Comprobamos si la combinación dada por la máquina 2 es igual a la original
 				resultadoMaq2=true;
@@ -172,8 +175,10 @@ public class Partida implements DibujablePartida {
 			}catch (InterruptedException e){
 				System.out.println();
 			}
-			if (contadorRondas%10==0||contadorRondas==0)
-				maquina1.getTablero().mostrarTableroDificil(true,true);		// Mostramos la combinacion original cada 10 turnos (aqui el segundo true no sirve de nada)
+			if (contadorRondas%10==0||contadorRondas==0) {
+				maquina1.getTablero().mostrarTableroDificil(true,true);		// Mostramos la combinacion original cada 10 turnos
+				maquina2.getTablero().mostrarTableroDificil(true,false);		// Mostramos la combinacion original cada 10 turnos
+			}
 			maquina1.getTablero().mostrarTableroDificil(false,true);		// Mostramos la última combinación de la máquina 1 que se ha realizado en la partida
 			maquina2.getTablero().mostrarTableroDificil(false,false);		// Mostramos la última combinación de la máquina 2 que se ha realizado en la partida
 			contadorRondas++;		// Aumentamos el contador

@@ -4,7 +4,7 @@ package mastermind;
  * Esta clase almacena tres combinaciones, de las cuales 2, le llegan desde el Tablero
  * 
  * @author Nekotaga
- * @version 1.0
+ * @version 1.3
  * @since 1.0
  * @see Combinacion
  * @see Tablero
@@ -113,23 +113,23 @@ public class Ronda {
 		boolean comprobadaOriginal[] = new boolean[combinacionOriginal.getCombinacion().length];
 		for (byte i=0;i<comprobadaOriginal.length;i++)	//---- Esto sirve para que las casillas
 			comprobadaOriginal[i]=false;					// comprobadas no se vuelvan a comprobar.
-		for (byte i=0;i<combinacionPropuesta.getCombinacion().length;i++) {															//---- Compara las casillas de la
-			aparece=false;																												// combinación propuesta por
-			for (byte j=0;j<combinacionOriginal.getCombinacion().length&&!aparece;j++) {												// las casillas una a una de
-				if (combinacionPropuesta.getCombinacion()[i].equals(combinacionOriginal.getCombinacion()[j])&&!comprobadaOriginal[j]) {	// la combinación original.
-					if (combinacionPropuesta.getCombinacion()[i].equals(combinacionOriginal.getCombinacion()[i])) {						// Al hacer esto se meten las
-						contadorNegras++;																								// casillas comprobadas de la
-						comprobadaOriginal[i]=true;																						// combinación original en un
-					}else if (combinacionPropuesta.getCombinacion()[j].equals(combinacionOriginal.getCombinacion()[j])) {				// array para marcarlas y que
-						contadorNegras++;																								// no se comparen 2 veces. La
-						comprobadaOriginal[j]=true;																						// ccombinación propuesta no
-					}else {																												// lo necesita porque se
-						contadorBlancas++;																								// recorre de uno en uno. 
-						comprobadaOriginal[j]=true;																						// Si el color de ficha de
-					}																													// las 2 casillas es la misma,
-					aparece=true;																										// según la posición de ambas
-				}																														// se marcará como ficha negra
-			}																															// o ficha blanca.
+		for (byte i=0;i<combinacionPropuesta.getCombinacion().length;i++) {																//---- Compara las casillas de la
+			aparece=false;																													// combinación propuesta por
+			for (byte j=0;j<combinacionOriginal.getCombinacion().length&&!aparece;j++) {													// las casillas una a una de
+				if (combinacionPropuesta.getCombinacion()[i].equals(combinacionOriginal.getCombinacion()[j])&&!comprobadaOriginal[j]) {		// la combinación original.
+					if (combinacionPropuesta.getCombinacion()[i].equals(combinacionOriginal.getCombinacion()[i])&&!comprobadaOriginal[i]) {	// Al hacer esto se meten las
+						contadorNegras++;																									// casillas comprobadas de la
+						comprobadaOriginal[i]=true;																							// combinación original en un
+					}else if (combinacionPropuesta.getCombinacion()[j].equals(combinacionOriginal.getCombinacion()[j])) {					// array para marcarlas y que
+						contadorNegras++;																									// no se comparen 2 veces. La
+						comprobadaOriginal[j]=true;																							// ccombinación propuesta no
+					}else {																													// lo necesita porque se
+						contadorBlancas++;																									// recorre de uno en uno. 
+						comprobadaOriginal[j]=true;																							// Si el color de ficha de
+					}																														// las 2 casillas es la misma,
+					aparece=true;																											// según la posición de ambas
+				}																															// se marcará como ficha negra
+			}																																// o ficha blanca.
 		}
 	}
 }
