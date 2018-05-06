@@ -46,6 +46,14 @@ public abstract class Usuario {
 	protected Dificultad dificultad;
 	
 	//Constructor
+	/**
+	 * Construye un objeto Usuario que puede ser un Jugador o una Maquina.
+	 * @param tiene Indica si el usuario tiene o no una {@link #combinacionOriginal}.
+	 * @param dificultad La dificultad de la partida.
+	 * @see Jugador
+	 * @see Maquina
+	 * @see Partida
+	 */
 	Usuario(boolean tiene,Dificultad dificultad){
 		this.tiene=tiene;
 		this.dificultad=dificultad;

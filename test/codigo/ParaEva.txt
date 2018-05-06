@@ -1,0 +1,2 @@
+He importado al junit las clases necesarias para que Jugador y Ronda funcionen bien.
+A estas las he cambiado el nombre a ReferenciaClase, mientras que a las 2 que necesitan las pruebas les he dejado de nombre PruebaClase.

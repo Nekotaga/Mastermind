@@ -1,57 +1,17 @@
-package mastermind;
+package codigo;
 
-/**
- * Esta clase almacena tres combinaciones, de las cuales 2, le llegan desde el Tablero
- * 
- * @author Nekotaga
- * @version 1.3
- * @since 1.0
- * @see Combinacion
- * @see Tablero
- */
-public class Ronda {
+public class PruebaRonda {
 
 	//Variables
-	/**
-	 * Almacena el número de ronda por el que va.
-	 * Puede devolverse mediante {@link #getContadorRonda()}.
-	 */
 	private int contadorRonda;
-	/**
-	 * Almacena el número de fichas negras generado por {@link #contarByN()}.
-	 */
-	private byte contadorNegras;
-	/**
-	 * Almacena el número de fichas blancas generado por {@link #contarByN()}.
-	 */
-	private byte contadorBlancas;
-	/**
-	 * Almacena la combinación de fichas blancas y negras generada por {@link #crearByN()}.
-	 * Puede devolverse mediante {@link #getResultadoByN()}.
-	 * @see Combinacion
-	 */
-	private Combinacion resultadoByN;
-	/**
-	 * Almacena la combinación de fichas de color a adivinar pasada por el constructor #{@link Ronda}.
-	 * @see Combinacion
-	 */
-	private Combinacion combinacionOriginal;
-	/**
-	 * Almacena la combinación de fichas de color propuesta pasada por el constructor #{@link Ronda}.
-	 * Puede devolverse mediante {@link #getCombinacionPropuesta()}.
-	 * @see Combinacion
-	 */
-	private Combinacion combinacionPropuesta;
+	public byte contadorNegras;
+	public byte contadorBlancas;
+	public ReferenciaCombinacion resultadoByN;
+	public ReferenciaCombinacion combinacionOriginal;
+	public ReferenciaCombinacion combinacionPropuesta;
 	
 	//Constructor
-	/**
-	 * Construye un nuevo objeto Ronda formado por 3 combinaciones.
-	 * @param contadorRonda			El número de ronda.
-	 * @param combinacionOriginal	La combinación a adivinar.
-	 * @param combinacionPropuesta	La combinación propuesta.
-	 * @see Combinacion
-	 */
-	Ronda(int contadorRonda,Combinacion combinacionOriginal,Combinacion combinacionPropuesta){
+	public PruebaRonda(int contadorRonda,ReferenciaCombinacion combinacionOriginal,ReferenciaCombinacion combinacionPropuesta){
 		this.contadorRonda=contadorRonda;
 		this.combinacionOriginal=combinacionOriginal;
 		this.combinacionPropuesta=combinacionPropuesta;
@@ -59,55 +19,31 @@ public class Ronda {
 	}
 
 	//Getters
-	/**
-	 * Devuelve el valor de la variable {@link #contadorRonda}.
-	 * @return	El número de ronda.
-	 */
 	protected int getContadorRonda() {
 		return contadorRonda;
 	}
-	/** 
-	 * Devuelve el valor de la variable {@link #resultadoByN}.
-	 * @return	La combinacion de fichas blancas y negras.
-	 * @see Combinacion
-	 */
-	protected Combinacion getResultadoByN() {
+	protected ReferenciaCombinacion getResultadoByN() {
 		return resultadoByN;
 	}
-	/** 
-	 * Devuelve el valor de la variable {@link #combinacionPropuesta}.
-	 * @return	La combinacion propuesta.
-	 * @see Combinacion
-	 */
-	protected Combinacion getCombinacionPropuesta() {
+	protected ReferenciaCombinacion getCombinacionPropuesta() {
 		return combinacionPropuesta;
 	}
 
 	//Métodos
-	/**
-	 * Crea una combinacion de fichas blancas y negras a partir de {@link #contadorBlancas} y {@link #contadorNegras}.
-	 * @see Combinacion
-	 * @see Ficha
-	 * @see #contarByN()
-	 */
 	private void crearByN() {
-		Ficha fichasByN[] = new Ficha[combinacionOriginal.getCombinacion().length];
+		ReferenciaFicha fichasByN[] = new ReferenciaFicha[combinacionOriginal.getCombinacion().length];
 		byte contador=0;
 		contarByN();	// Contamos las casillas blancas y negras
 		for (byte negras=0;negras<contadorNegras;negras++) {		//---- Se almacenan las casillas
-			fichasByN[contador]=new Ficha(Color.NEGRO);					// negras en el array.
+			fichasByN[contador]=new ReferenciaFicha(ReferenciaColor.NEGRO);					// negras en el array.
 			contador++;													//
 		}
 		for (byte blancas=0;blancas<contadorBlancas;blancas++) {	//---- Se almacenan las casillas
-			fichasByN[contador]=new Ficha(Color.BLANCO);				// blancas en el array.
+			fichasByN[contador]=new ReferenciaFicha(ReferenciaColor.BLANCO);				// blancas en el array.
 			contador++;													//
 		}
-		resultadoByN = new Combinacion(fichasByN);
+		resultadoByN = new ReferenciaCombinacion(fichasByN);
 	}
-	/**
-	 * Cuenta las fichas blancas y negras que hay entre la {@link #combinacionOriginal} y la {@link #combinacionPropuesta}.
-	 * @see Combinacion
-	 */
 	private void contarByN() {
 		boolean aparece;
 		boolean comprobadaOriginal[] = new boolean[combinacionOriginal.getCombinacion().length];
