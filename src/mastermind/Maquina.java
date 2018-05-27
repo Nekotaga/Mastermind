@@ -6,7 +6,7 @@ import java.util.Random;
 import java.util.TreeMap;
 
 /**
- * Esta clase almacena una máquina que es hija de Usuariol, al igual que la IA de esta máquina.
+ * Esta clase almacena una máquina que es hija de Usuario, al igual que la IA de esta máquina.
  * 
  * @author Nekotaga
  * @version 1.3
@@ -102,6 +102,17 @@ public class Maquina extends Usuario{
 	 */
 	private ArrayList<Combinacion> combinacionesGuardadas;
 	
+	private Color colorEscogido;
+
+	private byte numAparicionesColorEscogido[];
+	
+	private Combinacion combinacionFinal;
+	
+	private boolean fichasUnicas;
+	
+	private boolean contadorColoresActualizado;
+	
+	
 	//Constructor
 	/**
 	 * Construye un nuevo objeto Maquina hijo de Usuario e inicializa sus variables.
@@ -129,12 +140,14 @@ public class Maquina extends Usuario{
 		numCambiosFase2 = 0;
 		primeraMitad = true;
 		combinacionCorrecta = new Combinacion(new Ficha[dificultad.getNumCasillas()]);
+		combinacionFinal = new Combinacion(new Ficha[dificultad.getNumCasillas()]);
 		mapaColores = new TreeMap<Color,Boolean[]>();
 		mapaColoresFacil = new TreeMap<Byte,Color>();
 		coloresPosibles = new ArrayList<Color>();
 		coloresCorrectos = new ArrayList<Color>();
 		coloresIncorrectos = new ArrayList<Color>();
 		combinacionesGuardadas = new ArrayList<Combinacion>();
+		fichasUnicas=false;
 	}
 	/**
 	 * Crea una combinación random.
@@ -148,6 +161,47 @@ public class Maquina extends Usuario{
 		boolean almacenarColores[]=new boolean[dificultad.getNumColores()];
 		Combinacion combinacion=new Combinacion(new Ficha[dificultad.getNumCasillas()]);
 		Random rnd=new Random();
+		/*
+		combinacion.getCombinacion()[0]=new Ficha(Color.ROJO);
+		combinacion.getCombinacion()[1]=new Ficha(Color.TEAL);
+		combinacion.getCombinacion()[2]=new Ficha(Color.TEAL);
+		combinacion.getCombinacion()[3]=new Ficha(Color.VERDE);
+		combinacion.getCombinacion()[4]=new Ficha(Color.AMARILLO);
+		combinacion.getCombinacion()[5]=new Ficha(Color.TEAL);
+		combinacion.getCombinacion()[6]=new Ficha(Color.TEAL);
+		combinacion.getCombinacion()[7]=new Ficha(Color.AZUL);
+		//*/
+		/*
+		combinacion.getCombinacion()[0]=new Ficha(Color.VERDE);
+		combinacion.getCombinacion()[1]=new Ficha(Color.TEAL);
+		combinacion.getCombinacion()[2]=new Ficha(Color.ROJO);
+		combinacion.getCombinacion()[3]=new Ficha(Color.TEAL);
+		combinacion.getCombinacion()[4]=new Ficha(Color.LIMA);
+		combinacion.getCombinacion()[5]=new Ficha(Color.CELESTE);
+		combinacion.getCombinacion()[6]=new Ficha(Color.CELESTE);
+		combinacion.getCombinacion()[7]=new Ficha(Color.ROJO);
+		//*/
+		/*
+		combinacion.getCombinacion()[0]=new Ficha(Color.LIMA);
+		combinacion.getCombinacion()[1]=new Ficha(Color.GRIS);
+		combinacion.getCombinacion()[2]=new Ficha(Color.VERDE);
+		combinacion.getCombinacion()[3]=new Ficha(Color.VERDE);
+		combinacion.getCombinacion()[4]=new Ficha(Color.CELESTE);
+		combinacion.getCombinacion()[5]=new Ficha(Color.MORADO);
+		combinacion.getCombinacion()[6]=new Ficha(Color.CELESTE);
+		combinacion.getCombinacion()[7]=new Ficha(Color.ROJO);
+		//*/
+		/*
+		combinacion.getCombinacion()[0]=new Ficha(Color.CELESTE);
+		combinacion.getCombinacion()[1]=new Ficha(Color.AMARILLO);
+		combinacion.getCombinacion()[2]=new Ficha(Color.AZUL);
+		combinacion.getCombinacion()[3]=new Ficha(Color.CELESTE);
+		combinacion.getCombinacion()[4]=new Ficha(Color.MORADO);
+		combinacion.getCombinacion()[5]=new Ficha(Color.CELESTE);
+		combinacion.getCombinacion()[6]=new Ficha(Color.CELESTE);
+		combinacion.getCombinacion()[7]=new Ficha(Color.TEAL);
+		//*/
+		//*
 		for (byte i=0;i<dificultad.getNumCasillas();i++) {		// Recorremos la combinación
 			if (!dificultad.isRepeticionColores()) {
 				do {
@@ -163,6 +217,7 @@ public class Maquina extends Usuario{
 			}else 	// Si la repetición de colores se permite simplemente creamos la ficha
 				combinacion.getCombinacion()[i]=new Ficha(dificultad.getColores()[rnd.nextInt(dificultad.getColores().length)]);
 		}
+		//*/
 		return combinacion;
 	}
 	/**
@@ -175,9 +230,14 @@ public class Maquina extends Usuario{
 	 */
 	private byte contarFichasByN(Combinacion combinacionByN) {
 		byte contadorFichas=0;
-		for (Ficha f:combinacionByN.getCombinacion())
-			if (f!=null)	// Mientras que no se encuentre una ficha null se aumenta el contador
-				contadorFichas++;
+		if (dificultad!=Dificultad.FACIL_COMPROBAR&&fase==2) {
+			for (byte i=0;i<combinacionByN.getCombinacion().length&&combinacionByN.getCombinacion()[i]!=null;i++)
+				if (combinacionByN.getCombinacion()[i].getColorFicha()==Color.NEGRO)	// Si aparecen fichas negras, aumenta el contador
+					contadorFichas++;
+		}else
+			for (Ficha f:combinacionByN.getCombinacion())
+				if (f!=null)	// Mientras que no se encuentre una ficha null se aumenta el contador
+					contadorFichas++;
 		return contadorFichas;
 	}
 	/**
@@ -203,7 +263,6 @@ public class Maquina extends Usuario{
 		LinkedList<Ronda> rondas = tablero.getRondas();
 		ArrayList<Color> coloresCorrIncor1 = new ArrayList<Color>();
 		ArrayList<Color> coloresCorrIncor2 = new ArrayList<Color>();
-		Boolean arrayPosicionColores[]=new Boolean[dificultad.getNumCasillas()];
 		if (dificultad==Dificultad.FACIL_COMPROBAR) {
 			combinacionByN = rondas.getLast().getResultadoByN();
 			colorIzq=ronda.getCombinacionPropuesta().getCombinacion()[0].getColorFicha();
@@ -335,10 +394,6 @@ public class Maquina extends Usuario{
 					combinacionCorrecta.getCombinacion()[i]=new Ficha(coloresCorrectos.get(i));
 			}
 			if (coloresRellenos==dificultad.getNumCasillas()) {	// Si ya se ha completado, pasamos a la segunda fase
-				for (byte i=0;i<dificultad.getNumCasillas();i++)
-					arrayPosicionColores[i]=true;
-				for (Ficha fco:combinacionPropuesta.getCombinacion())
-					mapaColores.put(fco.getColorFicha(),arrayPosicionColores);
 				fase++;
 			}
 		}
@@ -437,87 +492,173 @@ public class Maquina extends Usuario{
 	 */
 	protected Combinacion colocarCombinacion() {
 		byte posInicial;
-		byte colorEscogido;
+		byte colorElegido;
+		byte posiciones[];
+		boolean posInicialComprobada=false;
+		Boolean arrayPosicionColores[];
+		Color colores[];
 		Combinacion combinacion = new Combinacion(new Ficha[dificultad.getNumCasillas()]);
 		if (dificultad.equals(Dificultad.FACIL_COMPROBAR)) {
 			if (primeraMitad) {
 				posInicial=0;
-				colorEscogido=0;
+				colorElegido=0;
 			}else {
 				posInicial=(byte)(dificultad.getNumColores()/2);
-				colorEscogido=4;
+				colorElegido=4;
 			}
-			switch (fase) {
-				case 1:
-					for (byte i=0;i<dificultad.getNumCasillas();i++) {
-						if (contadorRondas==0) {																			//---- Primera Combinacion
-							combinacion.getCombinacion()[i]=new Ficha(dificultad.getColores()[i]);								//
-						}else if (coloresCorrectos.size()==dificultad.getNumCasillas()&&mapaColoresFacil.size()==0){		//---- Si ya se saben los
-							if (i<dificultad.getNumCasillas()/2)																// colores correctos pero
-								combinacion.getCombinacion()[i]=new Ficha(coloresCorrectos.get(0));								// no se sabe la posición
-							else																								// relativa de ninguno
-								combinacion.getCombinacion()[i]=new Ficha(coloresIncorrectos.get(0));							//
-						}else if (coloresCorrectos.size()==dificultad.getNumCasillas()){									//---- Si ya se saben los
-							if (i==0)																							// colores correctos y
-								contadorColores++;																				// se sabe la posición
-							if (i<dificultad.getNumCasillas()/2) {																// relativa de al menos 1
-								if (mapaColoresFacil.containsKey((byte)0))														//
-									combinacion.getCombinacion()[i]=new Ficha(mapaColoresFacil.get((byte)0));					//
-								else																							//
-									combinacion.getCombinacion()[i]=new Ficha(mapaColoresFacil.get((byte)2));					//
-							}else {																								//
-								while (mapaColoresFacil.containsValue(coloresCorrectos.get(contadorColores)))					//
-									contadorColores++;																			//
-									combinacion.getCombinacion()[i]=new Ficha(coloresCorrectos.get(contadorColores));			//
-							}																									//
-						}else if (coloresPosibles.size()==2) {																//---- Aún no se saben todos
-							if (i<dificultad.getNumCasillas()/2)																// los colores correctos
-								combinacion.getCombinacion()[i]=new Ficha(dificultad.getColores()[colorEscogido]);				// pero si se sabe cuales
-							else																								// son 2 de los posibles
-								combinacion.getCombinacion()[i]=new Ficha(coloresPosibles.get(0));								//
-						}else {																								//---- Aún no se saben todos
-							if (i==0)																							// los colores correctos
-								contadorColores++;																				// y tampoco hay solo 2
-							if (i<dificultad.getNumCasillas()/2)																// colores posibles
-								combinacion.getCombinacion()[i]=new Ficha(dificultad.getColores()[posInicial]);					//
-							else																								//
-								combinacion.getCombinacion()[i]=new Ficha(dificultad.getColores()[posInicial+contadorColores]);	//
-						}
+			if (fase==1) {
+				for (byte i=0;i<dificultad.getNumCasillas();i++) {
+					if (contadorRondas==0) {																			//---- Primera Combinacion
+						combinacion.getCombinacion()[i]=new Ficha(dificultad.getColores()[i]);								//
+					}else if (coloresCorrectos.size()==dificultad.getNumCasillas()&&mapaColoresFacil.size()==0){		//---- Si ya se saben los
+						if (i<dificultad.getNumCasillas()/2)																// colores correctos pero
+							combinacion.getCombinacion()[i]=new Ficha(coloresCorrectos.get(0));								// no se sabe la posición
+						else																								// relativa de ninguno
+							combinacion.getCombinacion()[i]=new Ficha(coloresIncorrectos.get(0));							//
+					}else if (coloresCorrectos.size()==dificultad.getNumCasillas()){									//---- Si ya se saben los
+						if (i==0)																							// colores correctos y
+							contadorColores++;																				// se sabe la posición
+						if (i<dificultad.getNumCasillas()/2) {																// relativa de al menos 1
+							if (mapaColoresFacil.containsKey((byte)0))														//
+								combinacion.getCombinacion()[i]=new Ficha(mapaColoresFacil.get((byte)0));					//
+							else																							//
+								combinacion.getCombinacion()[i]=new Ficha(mapaColoresFacil.get((byte)2));					//
+						}else {																								//
+							while (mapaColoresFacil.containsValue(coloresCorrectos.get(contadorColores)))					//
+								contadorColores++;																			//
+								combinacion.getCombinacion()[i]=new Ficha(coloresCorrectos.get(contadorColores));			//
+						}																									//
+					}else if (coloresPosibles.size()==2) {																//---- Aún no se saben todos
+						if (i<dificultad.getNumCasillas()/2)																// los colores correctos
+							combinacion.getCombinacion()[i]=new Ficha(dificultad.getColores()[colorElegido]);				// pero si se sabe cuales
+						else																								// son 2 de los posibles
+							combinacion.getCombinacion()[i]=new Ficha(coloresPosibles.get(0));								//
+					}else {																								//---- Aún no se saben todos
+						if (i==0)																							// los colores correctos
+							contadorColores++;																				// y tampoco hay solo 2
+						if (i<dificultad.getNumCasillas()/2)																// colores posibles
+							combinacion.getCombinacion()[i]=new Ficha(dificultad.getColores()[posInicial]);					//
+						else																								//
+							combinacion.getCombinacion()[i]=new Ficha(dificultad.getColores()[posInicial+contadorColores]);	//
 					}
-					break;
-				case 2:
-					Ficha fichasMixtas[] = {new Ficha(Color.NEGRO),new Ficha(Color.NEGRO),new Ficha(Color.BLANCO),new Ficha(Color.BLANCO)};
-					Ficha fichasBlancas[] = {new Ficha(Color.BLANCO),new Ficha(Color.BLANCO),new Ficha(Color.BLANCO),new Ficha(Color.BLANCO)};
-					if (numCambiosFase2==0) {	// Colocamos combinaciones para ordenar los colores en sus mitades, solo se necesitan 3 combinaciones máximo para adivinar la combinación llegados a este punto
-						for (byte i=0;i<mapaColoresFacil.size();i++)
-							combinacion.getCombinacion()[i]=new Ficha(mapaColoresFacil.get(i));
-					}else if (numCambiosFase2==1&&tablero.getRondas().getLast().getResultadoByN().equals(new Combinacion(fichasMixtas))) {
-						combinacion.getCombinacion()[0]=new Ficha(mapaColoresFacil.get((byte)1));
-						combinacion.getCombinacion()[1]=new Ficha(mapaColoresFacil.get((byte)0));
-						combinacion.getCombinacion()[2]=new Ficha(mapaColoresFacil.get((byte)2));
-						combinacion.getCombinacion()[3]=new Ficha(mapaColoresFacil.get((byte)3));
-					}else if (numCambiosFase2==1&&tablero.getRondas().getLast().getResultadoByN().equals(new Combinacion(fichasBlancas))) {
-						combinacion.getCombinacion()[0]=new Ficha(mapaColoresFacil.get((byte)1));
-						combinacion.getCombinacion()[1]=new Ficha(mapaColoresFacil.get((byte)0));
-						combinacion.getCombinacion()[2]=new Ficha(mapaColoresFacil.get((byte)3));
-						combinacion.getCombinacion()[3]=new Ficha(mapaColoresFacil.get((byte)2));
-					}else if (numCambiosFase2==2) {
-						combinacion.getCombinacion()[0]=new Ficha(mapaColoresFacil.get((byte)0));
-						combinacion.getCombinacion()[1]=new Ficha(mapaColoresFacil.get((byte)1));
-						combinacion.getCombinacion()[2]=new Ficha(mapaColoresFacil.get((byte)3));
-						combinacion.getCombinacion()[3]=new Ficha(mapaColoresFacil.get((byte)2));
-					}
-					break;
+				}
+			}else {
+				Ficha fichasMixtas[] = {new Ficha(Color.NEGRO),new Ficha(Color.NEGRO),new Ficha(Color.BLANCO),new Ficha(Color.BLANCO)};
+				Ficha fichasBlancas[] = {new Ficha(Color.BLANCO),new Ficha(Color.BLANCO),new Ficha(Color.BLANCO),new Ficha(Color.BLANCO)};
+				if (numCambiosFase2==0) {	// Colocamos combinaciones para ordenar los colores en sus mitades, solo se necesitan 3 combinaciones máximo para adivinar la combinación llegados a este punto
+					for (byte i=0;i<mapaColoresFacil.size();i++)
+						combinacion.getCombinacion()[i]=new Ficha(mapaColoresFacil.get(i));
+				}else if (numCambiosFase2==1&&tablero.getRondas().getLast().getResultadoByN().equals(new Combinacion(fichasMixtas))) {
+					combinacion.getCombinacion()[0]=new Ficha(mapaColoresFacil.get((byte)1));
+					combinacion.getCombinacion()[1]=new Ficha(mapaColoresFacil.get((byte)0));
+					combinacion.getCombinacion()[2]=new Ficha(mapaColoresFacil.get((byte)2));
+					combinacion.getCombinacion()[3]=new Ficha(mapaColoresFacil.get((byte)3));
+				}else if (numCambiosFase2==1&&tablero.getRondas().getLast().getResultadoByN().equals(new Combinacion(fichasBlancas))) {
+					combinacion.getCombinacion()[0]=new Ficha(mapaColoresFacil.get((byte)1));
+					combinacion.getCombinacion()[1]=new Ficha(mapaColoresFacil.get((byte)0));
+					combinacion.getCombinacion()[2]=new Ficha(mapaColoresFacil.get((byte)3));
+					combinacion.getCombinacion()[3]=new Ficha(mapaColoresFacil.get((byte)2));
+				}else if (numCambiosFase2==2) {
+					combinacion.getCombinacion()[0]=new Ficha(mapaColoresFacil.get((byte)0));
+					combinacion.getCombinacion()[1]=new Ficha(mapaColoresFacil.get((byte)1));
+					combinacion.getCombinacion()[2]=new Ficha(mapaColoresFacil.get((byte)3));
+					combinacion.getCombinacion()[3]=new Ficha(mapaColoresFacil.get((byte)2));
+				}
 			}
 		}else
-			if (fase==1){		// Se averiguan los colores
+			if (fase==1){	// Se averiguan los colores
+				if (contadorRondas==0)
+					primeraMitad=true;
 				for (byte i=0;i<coloresRellenos;i++)
 					combinacion.getCombinacion()[i]=combinacionPropuesta.getCombinacion()[i];
 				for (byte i=coloresRellenos;i<dificultad.getNumCasillas();i++)
 					combinacion.getCombinacion()[i]=new Ficha(dificultad.getColores()[contadorColores]);
 				contadorColores++;
 			}else {			// Se averiguan las posiciones
-				combinacion=combinacionCorrecta;
+				if (primeraMitad) {
+					contadorColores=0;
+					primeraMitad=false;
+					contadorColoresActualizado=true;
+					numAparicionesColorEscogido = new byte[coloresCorrectos.size()];
+					for (byte i=0;i<coloresCorrectos.size();i++) {	// Se le asocia el array de trues a todos los colores
+						arrayPosicionColores = new Boolean[dificultad.getNumCasillas()];
+						for (byte j=0;j<dificultad.getNumCasillas();j++)	// Se crea el array de trues
+							arrayPosicionColores[j]=true;
+						mapaColores.put(coloresCorrectos.get(i),arrayPosicionColores);
+						for (byte j=0;j<dificultad.getNumCasillas();j++)		// Cuenta el número de veces que el color aparece
+							if (coloresCorrectos.get(i)==combinacionCorrecta.getCombinacion()[j].getColorFicha())
+								numAparicionesColorEscogido[i]++;
+					}
+					for (Color c:coloresPosibles) {	// Se añaden los colores incorrectos que faltan
+						coloresIncorrectos.add(c);
+					}
+					coloresPosibles.clear();
+					for (Color c:coloresCorrectos)
+						coloresPosibles.add(c);
+				}else {
+					for (byte i=0,contador=0;i<mapaColores.get(colorEscogido).length;i++) {
+						if (mapaColores.get(colorEscogido)[i])
+							contador++;
+						if (i==mapaColores.get(colorEscogido).length-1) {
+							if (contador==numAparicionesColorEscogido[contadorColores]) {
+								for (byte j=0;j<mapaColores.get(colorEscogido).length;j++) {
+									if (mapaColores.get(colorEscogido)[j]) {
+										combinacionFinal.getCombinacion()[j] = new Ficha(colorEscogido);
+										for(Color c:coloresPosibles) {
+											if (c!=colorEscogido) {
+												for (byte k=0;k<dificultad.getNumCasillas();k++) {
+													if (combinacionFinal.getCombinacion()[k]!=null) {
+														mapaColores.get(c)[k]=false;
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				posInicial=0;
+				colores = new Color[coloresCorrectos.size()];
+				for (byte i=0;i<coloresCorrectos.size();i++)
+					colores[i]=coloresCorrectos.get(i);
+				if (!contadorColoresActualizado) {
+					contadorColores++;
+					contadorColoresActualizado=true;
+				}
+				colorEscogido=colores[contadorColores];
+				if (!fichasUnicas) {
+					posiciones = new byte[numAparicionesColorEscogido[contadorColores]];
+					for (byte i=0,j=0;i<mapaColores.get(colorEscogido).length&&j<posiciones.length;i++) {	// Calcula la posición del primer color a colocar
+						if (mapaColores.get(colorEscogido)[i]) {
+							posiciones[j]=i;
+							j++;
+						}
+					}
+				}else {
+					posiciones = new byte[1];
+					for (byte i=0;i<mapaColores.get(colorEscogido).length&&!posInicialComprobada;i++)
+						if (!mapaColores.get(colorEscogido)[i])
+							posInicial++;
+						else if (combinacionFinal.getCombinacion()[i]!=null) {
+							if(combinacionFinal.getCombinacion()[i].getColorFicha()==colorEscogido)
+								posInicial++;
+						}else
+							posInicialComprobada=true;
+					posiciones[0]=posInicial;
+				}
+				for (byte i=0,j=0;i<combinacion.getCombinacion().length;i++) {	// Coloca los colores en la combinación
+					combinacion.getCombinacion()[i]=new Ficha(coloresIncorrectos.get(0));
+					if (combinacionFinal.getCombinacion()[i]!=null)
+						combinacion.getCombinacion()[i]=new Ficha(combinacionFinal.getCombinacion()[i].getColorFicha());
+					else if (j<posiciones.length) {
+						if (i==posiciones[j]) {
+							combinacion.getCombinacion()[i]=new Ficha(colorEscogido);
+							j++;
+						}
+					}
+				}
 			}
 		return combinacion;
 	}
@@ -529,6 +670,7 @@ public class Maquina extends Usuario{
 	 * @see Usuario
 	 */
 	protected void comprobarCombinacion(Ronda ronda) {
+		byte contador=0;
 		boolean posicionesComprobadas=false;
 		Combinacion combinacionByN_inicial;
 		if (dificultad.equals(Dificultad.FACIL_COMPROBAR)) {
@@ -566,7 +708,68 @@ public class Maquina extends Usuario{
 						coloresPosibles.add(color);		// Se añaden todos los colores a posibles
 				comprobarColores((byte)0,ronda);	// Se comprueban los colores
 			}else {
-				
+				for (Ficha fco:combinacionFinal.getCombinacion())
+					if (fco!=null)
+						contador++;
+				if (contarFichasByN(ronda.getResultadoByN())-contador==0) {
+					for (byte numCasilla=0,coloresRestantes=dificultad.getNumColores();numCasilla<mapaColores.get(colorEscogido).length&&coloresRestantes>0;numCasilla++) {
+						if (coloresRestantes==dificultad.getNumColores()){
+							if (!fichasUnicas)
+								coloresRestantes=numAparicionesColorEscogido[contadorColores];
+							else
+								coloresRestantes=1;
+						}
+						if (mapaColores.get(colorEscogido)[numCasilla]) {
+							if (combinacionFinal.getCombinacion()[numCasilla]!=null) {
+								if (combinacionFinal.getCombinacion()[numCasilla].getColorFicha()!=colorEscogido) {
+									mapaColores.get(colorEscogido)[numCasilla]=false;
+									coloresRestantes--;
+								}
+							}else {
+								mapaColores.get(colorEscogido)[numCasilla]=false;
+								coloresRestantes--;
+							}
+						}
+					}
+				}else if (contarFichasByN(ronda.getResultadoByN())-contador==numAparicionesColorEscogido[contadorColores]&&!fichasUnicas||contarFichasByN(ronda.getResultadoByN())-contador==1&&fichasUnicas) {
+					for (byte i=0;i<combinacionPropuesta.getCombinacion().length;i++)
+						if (combinacionPropuesta.getCombinacion()[i].getColorFicha()==colorEscogido) {
+							combinacionFinal.getCombinacion()[i]=new Ficha(colorEscogido);
+						}else if (contarFichasByN(ronda.getResultadoByN())-contador==numAparicionesColorEscogido[contadorColores])
+							mapaColores.get(colorEscogido)[i]=false;
+				}else {
+					fichasUnicas=true;
+				}
+				contador=0;
+				for (boolean b:mapaColores.get(colorEscogido))	// Comprueba el número de casillas que quedan por comprobar
+					if (b)
+						contador++;
+				if (contador==numAparicionesColorEscogido[contadorColores]||contador==1&&fichasUnicas) {	// Comprueba si todos los colores del color indicado están en sus posiciones correctas
+					for(Color c:coloresPosibles) {
+						if (c!=colorEscogido) {
+							for (byte i=0;i<dificultad.getNumCasillas();i++) {
+								if (combinacionFinal.getCombinacion()[i]!=null) {
+									mapaColores.get(c)[i]=false;
+								}
+							}
+						}
+					}
+					if (fichasUnicas) {
+						contador=0;
+						for (boolean b:mapaColores.get(colorEscogido))	// Comprueba el número de casillas que quedan por comprobar
+							if (b)
+								contador++;
+						if (contador==numAparicionesColorEscogido[contadorColores]) {
+							coloresPosibles.remove(colorEscogido);
+							contadorColoresActualizado=false;
+							fichasUnicas=false;
+						}
+					}else {
+						coloresPosibles.remove(colorEscogido);
+						contadorColoresActualizado=false;
+						fichasUnicas=false;
+					}
+				}
 			}
 		}
 		contadorRondas++;		// Aumentamos el contador de rondas

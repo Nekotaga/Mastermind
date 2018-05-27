@@ -159,7 +159,7 @@ public enum Dificultad {
 		else if (this==Dificultad.MEDIO)
 			descripcion=String.format("%s\n - Jugadores: %d (jugador y máquina)\n - Casillas: %d\n - Rondas máximas:%d\n - Colores: %d\n - Repetición de colores: %s\n",Dificultad.MEDIO.nombre(),Dificultad.MEDIO.getNumJugadores(),Dificultad.MEDIO.getNumCasillas(),Dificultad.MEDIO.getNumIntentos(),Dificultad.MEDIO.getNumColores(),Dificultad.MEDIO.isRepeticionColores()?"Sí":"No");
 		else if (this==Dificultad.DIFICIL)
-			descripcion=String.format("%s\n - Jugadores: %d (máquina y máquina)\n - Casillas: %d\n - Rondas máximas:∞\n - Colores: %d\n - Repetición de colores: %s\n",Dificultad.DIFICIL.nombre(),Dificultad.DIFICIL.getNumJugadores(),Dificultad.DIFICIL.getNumCasillas(),Dificultad.DIFICIL.getNumColores(),Dificultad.DIFICIL.isRepeticionColores()?"Sí":"No");
+			descripcion=String.format("%s\n - Jugadores: %d (máquina y máquina)\n - Casillas: %d\n - Rondas máximas: ∞\n - Colores: %d\n - Repetición de colores: %s\n",Dificultad.DIFICIL.nombre(),Dificultad.DIFICIL.getNumJugadores(),Dificultad.DIFICIL.getNumCasillas(),Dificultad.DIFICIL.getNumColores(),Dificultad.DIFICIL.isRepeticionColores()?"Sí":"No");
 		return descripcion;
 	}
 }
