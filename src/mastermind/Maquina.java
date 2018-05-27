@@ -139,6 +139,7 @@ public class Maquina extends Usuario{
 		contadorColores = 0;
 		numCambiosFase2 = 0;
 		primeraMitad = true;
+		fichasUnicas = false;
 		combinacionCorrecta = new Combinacion(new Ficha[dificultad.getNumCasillas()]);
 		combinacionFinal = new Combinacion(new Ficha[dificultad.getNumCasillas()]);
 		mapaColores = new TreeMap<Color,Boolean[]>();
@@ -147,7 +148,6 @@ public class Maquina extends Usuario{
 		coloresCorrectos = new ArrayList<Color>();
 		coloresIncorrectos = new ArrayList<Color>();
 		combinacionesGuardadas = new ArrayList<Combinacion>();
-		fichasUnicas=false;
 	}
 	/**
 	 * Crea una combinación random.
@@ -156,52 +156,13 @@ public class Maquina extends Usuario{
 	 */
 	private Combinacion colocarCombinacionRandom() {
 		byte numero;
+		boolean aparece=false;
 		boolean colorActual;
 		boolean colorRepetido;
 		boolean almacenarColores[]=new boolean[dificultad.getNumColores()];
 		Combinacion combinacion=new Combinacion(new Ficha[dificultad.getNumCasillas()]);
 		Random rnd=new Random();
-		/*
-		combinacion.getCombinacion()[0]=new Ficha(Color.ROJO);
-		combinacion.getCombinacion()[1]=new Ficha(Color.TEAL);
-		combinacion.getCombinacion()[2]=new Ficha(Color.TEAL);
-		combinacion.getCombinacion()[3]=new Ficha(Color.VERDE);
-		combinacion.getCombinacion()[4]=new Ficha(Color.AMARILLO);
-		combinacion.getCombinacion()[5]=new Ficha(Color.TEAL);
-		combinacion.getCombinacion()[6]=new Ficha(Color.TEAL);
-		combinacion.getCombinacion()[7]=new Ficha(Color.AZUL);
-		//*/
-		/*
-		combinacion.getCombinacion()[0]=new Ficha(Color.VERDE);
-		combinacion.getCombinacion()[1]=new Ficha(Color.TEAL);
-		combinacion.getCombinacion()[2]=new Ficha(Color.ROJO);
-		combinacion.getCombinacion()[3]=new Ficha(Color.TEAL);
-		combinacion.getCombinacion()[4]=new Ficha(Color.LIMA);
-		combinacion.getCombinacion()[5]=new Ficha(Color.CELESTE);
-		combinacion.getCombinacion()[6]=new Ficha(Color.CELESTE);
-		combinacion.getCombinacion()[7]=new Ficha(Color.ROJO);
-		//*/
-		/*
-		combinacion.getCombinacion()[0]=new Ficha(Color.LIMA);
-		combinacion.getCombinacion()[1]=new Ficha(Color.GRIS);
-		combinacion.getCombinacion()[2]=new Ficha(Color.VERDE);
-		combinacion.getCombinacion()[3]=new Ficha(Color.VERDE);
-		combinacion.getCombinacion()[4]=new Ficha(Color.CELESTE);
-		combinacion.getCombinacion()[5]=new Ficha(Color.MORADO);
-		combinacion.getCombinacion()[6]=new Ficha(Color.CELESTE);
-		combinacion.getCombinacion()[7]=new Ficha(Color.ROJO);
-		//*/
-		/*
-		combinacion.getCombinacion()[0]=new Ficha(Color.CELESTE);
-		combinacion.getCombinacion()[1]=new Ficha(Color.AMARILLO);
-		combinacion.getCombinacion()[2]=new Ficha(Color.AZUL);
-		combinacion.getCombinacion()[3]=new Ficha(Color.CELESTE);
-		combinacion.getCombinacion()[4]=new Ficha(Color.MORADO);
-		combinacion.getCombinacion()[5]=new Ficha(Color.CELESTE);
-		combinacion.getCombinacion()[6]=new Ficha(Color.CELESTE);
-		combinacion.getCombinacion()[7]=new Ficha(Color.TEAL);
-		//*/
-		//*
+		Random casilla=new Random();
 		for (byte i=0;i<dificultad.getNumCasillas();i++) {		// Recorremos la combinación
 			if (!dificultad.isRepeticionColores()) {
 				do {
@@ -214,10 +175,17 @@ public class Maquina extends Usuario{
 						almacenarColores[numero]=true;							//
 				}while (colorRepetido);											// ---------¬¬
 				combinacion.getCombinacion()[i]=new Ficha(dificultad.getColores()[numero]);	// Creamos la ficha
-			}else 	// Si la repetición de colores se permite simplemente creamos la ficha
-				combinacion.getCombinacion()[i]=new Ficha(dificultad.getColores()[rnd.nextInt(dificultad.getColores().length)]);
+			}else { 	// Si la repetición de colores se permite simplemente creamos la ficha
+				combinacion.getCombinacion()[i]=new Ficha(dificultad.getColores()[rnd.nextInt(dificultad.getNumColores())]);
+				if (i==dificultad.getNumCasillas()-1) {
+					for (Ficha fco:combinacion.getCombinacion())
+						if (fco.getColorFicha()==dificultad.getColores()[dificultad.getNumColores()-1])
+							aparece=true;
+					if (!aparece)
+						combinacion.getCombinacion()[i-casilla.nextInt(dificultad.getNumCasillas())]=new Ficha(dificultad.getColores()[dificultad.getNumColores()-1]);
+				}
+			}
 		}
-		//*/
 		return combinacion;
 	}
 	/**
